@@ -7,7 +7,13 @@ contract EventTicketsV2 {
 
     /*
         Define an public owner variable. Set it to the creator of the contract when it is initialized.
+
+
     */
+
+    address payable public owner;
+
+
     uint   PRICE_TICKET = 100 wei;
 
     /*
@@ -15,18 +21,31 @@ contract EventTicketsV2 {
     */
     uint public idGenerator;
 
+
+
     /*
         Define an Event struct, similar to the V1 of this contract.
         The struct has 6 fields: description, website (URL), totalTickets, sales, buyers, and isOpen.
         Choose the appropriate variable type for each field.
         The "buyers" field should keep track of addresses and how many tickets each buyer purchases.
     */
+          struct Event{
+        string description;
+        string website;
+        uint totalTickets;
+        uint sales;
+        mapping(address => uint) buyers;
+        bool isOpen;
+        
 
+    }
     /*
         Create a mapping to keep track of the events.
         The mapping key is an integer, the value is an Event struct.
         Call the mapping "events".
     */
+
+        mapping(uint => Event) events;
 
     event LogEventAdded(string desc, string url, uint ticketsAvailable, uint eventId);
     event LogBuyTickets(address buyer, uint eventId, uint numTickets);
@@ -36,6 +55,20 @@ contract EventTicketsV2 {
     /*
         Create a modifier that throws an error if the msg.sender is not the owner.
     */
+
+    modifier onlyOwner(){
+       require( msg.sender == owner);
+        _;
+
+    }
+
+
+    constructor() public {
+        owner = msg.sender;
+        
+
+
+    }
 
     /*
         Define a function called addEvent().
@@ -49,6 +82,13 @@ contract EventTicketsV2 {
             - emit the appropriate event
             - return the event's ID
     */
+
+    function addEvent(string memory description, string memory URL, uint numberOfTickets) public onlyOwner() {
+        
+        events[idGenerator] = Event(description, URL, numberOfTickets, 0, true);
+        idGenerator++;
+        emit LogEventAdded(description, URL, numberOfTickets, idGenerator);
+    }
 
     /*
         Define a function called readEvent().
