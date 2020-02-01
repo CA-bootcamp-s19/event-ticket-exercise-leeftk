@@ -201,7 +201,7 @@ contract EventTicketsV2 {
         uint balance = msg.value+ (myEvent.sales * PRICE_TICKET);
         myEvent.isOpen = false;
         msg.sender.transfer(balance);
-        emit event LogEndSale(owner, balance, eventId);
+        emit LogEndSale(owner, balance, eventId);
 
     }
 }
