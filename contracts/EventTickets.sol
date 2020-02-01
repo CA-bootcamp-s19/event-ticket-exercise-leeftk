@@ -53,9 +53,10 @@ contract EventTickets {
         Create a modifier that throws an error if the msg.sender is not the owner.
     */
 
-   modifier onlyOwner {
-        require(msg.sender == owner);
+   modifier onlyOwner(){
+       require( msg.sender == owner);
         _;
+
     }
 
     /*
@@ -149,7 +150,7 @@ contract EventTickets {
     */
 
     function getRefund() public {
-        require(myEvent.buyers[msg.sender]>0);
+        require(myEvent.buyers[msg.sender] > 0);
         uint tickets = myEvent.buyers[msg.sender];
         myEvent.totalTickets += tickets;
         uint value = myEvent.buyers[msg.sender] * TICKET_PRICE;
@@ -168,11 +169,11 @@ contract EventTickets {
             - emit the appropriate event
     */
 
-    function endSale() public onlyOwner{
+
+    function endSale() public payable onlyOwner(){
+        uint balance = msg.value+ (myEvent.sales * TICKET_PRICE);
         myEvent.isOpen = false;
-        uint balance = address(this).balance;
-        owner.transfer(balance);
-        emit LogEndSale(owner, balance);
+        msg.sender.transfer(balance);
 
     }
 
